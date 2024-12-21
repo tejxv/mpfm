@@ -8,6 +8,7 @@ interface PortfolioState {
   addImage: (image: Image) => void;
   reorderImages: (images: Image[]) => void;
   fetchImages: () => Promise<void>;
+  deleteImage: (id: string) => Promise<void>;
 }
 
 export const usePortfolioStore = create<PortfolioState>((set) => ({
@@ -36,5 +37,20 @@ export const usePortfolioStore = create<PortfolioState>((set) => ({
     }
     
     set({ images: data });
+  },
+  deleteImage: async (id) => {
+    const { error } = await supabase
+      .from('images')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting image:', error);
+      return;
+    }
+    
+    set((state) => ({
+      images: state.images.filter(img => img.id !== id)
+    }));
   },
 }));

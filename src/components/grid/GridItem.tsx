@@ -5,10 +5,11 @@ import { Image } from '../../types/image';
 
 interface GridItemProps {
   image: Image;
-  user: any
+  user: any;
+  isEditMode: boolean;
 }
 
-export const GridItem: React.FC<GridItemProps> = ({ image, user }) => {
+export const GridItem: React.FC<GridItemProps> = ({ image, user, isEditMode }) => {
   const {
     attributes,
     listeners,
@@ -26,17 +27,20 @@ export const GridItem: React.FC<GridItemProps> = ({ image, user }) => {
     <div
       ref={setNodeRef}
       style={style}
-      {...(user ? attributes : {})}
-      {...(user ? listeners : {})}
-      className={`relative aspect-[3/4] group ${user ? 'cursor-move' : ''}`}
+      {...(user && isEditMode ? attributes : {})}
+      {...(user && isEditMode ? listeners : {})}
+      className={`relative border w-full h-min p-4 md:p-6 ${
+        isEditMode ? 'cursor-move' : ''
+      }`}
     >
-      <img
-        src={image.url}
-        alt="Portfolio"
-        className="w-full h-full object-cover"
-        loading="lazy"
-      />
-      <div className={`absolute inset-0 bg-black opacity-0 ${user ? 'group-hover:opacity-5' : ''} transition-opacity duration-300`} />
+      <div className={`relative aspect-auto overflow-hidden ${isEditMode ? 'animate-wiggle' : ''}`}>
+        <img
+          src={image.url}
+          alt="Portfolio"
+          className="w-full h-min object-contain"
+          loading="lazy"
+        />
+      </div>
     </div>
   );
 };
